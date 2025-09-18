@@ -1,0 +1,16 @@
+services:
+  azure-devops-mcp:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      # Persist Azure CLI credentials across container restarts
+      - azure-cli-config:/root/.azure
+    restart: unless-stopped
+
+volumes:
+  # Named volume for Azure CLI configuration persistence
+  azure-cli-config:
+    driver: local

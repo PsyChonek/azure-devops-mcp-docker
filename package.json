@@ -1,0 +1,36 @@
+{
+  "name": "azure-devops-mcp-rest-wrapper",
+  "version": "1.0.0",
+  "description": "Express wrapper for Azure DevOps MCP server to expose it as HTTP REST API",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "docker:build": "docker build -t azure-devops-mcp-rest-wrapper .",
+    "docker:run": "docker run -p 3000:3000 azure-devops-mcp-rest-wrapper"
+  },
+  "keywords": [
+    "azure-devops",
+    "mcp",
+    "rest-api",
+    "express",
+    "docker"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@azure-devops/mcp": "^2.0.0",
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^24.5.1",
+    "typescript": "^5.6.2",
+    "ts-node": "^10.9.2"
+  }
+}
