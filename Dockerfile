@@ -51,8 +51,9 @@ COPY src/ ./src/
 COPY scripts/ ./scripts/
 COPY docker-entrypoint.sh ./
 
-# Make scripts executable
-RUN chmod +x ./docker-entrypoint.sh ./scripts/auth-check.sh
+# Fix line endings and make scripts executable
+RUN sed -i 's/\r$//' ./docker-entrypoint.sh ./scripts/auth-check.sh && \
+    chmod +x ./docker-entrypoint.sh ./scripts/auth-check.sh
 
 # Expose port
 EXPOSE 3000
