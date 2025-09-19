@@ -62,4 +62,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
 
 # Start with authentication check and app startup
-CMD ["bash", "-c", "echo '🚀 Starting Azure DevOps MCP REST Wrapper...'; echo '🔐 Checking Azure CLI authentication...'; if ! az account show >/dev/null 2>&1; then echo '[Azure Auth] ❌ Not authenticated, starting device code login...'; echo '============================================'; echo '[Azure Auth] AZURE AUTHENTICATION REQUIRED'; echo '============================================'; echo ''; az login --allow-no-subscriptions --use-device-code; fi; echo '[Azure Auth] ✅ Authentication verified!'; echo '🔧 Starting application...'; npx ts-node --transpile-only src/index.ts"]
+CMD ["bash", "-c", "echo '🚀 Starting Azure DevOps MCP REST Wrapper...'; echo '🔐 Checking Azure CLI authentication...'; ./scripts/auth-check.sh; echo '🔧 Starting application...'; npx ts-node --transpile-only src/index.ts"]

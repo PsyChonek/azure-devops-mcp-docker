@@ -4,17 +4,24 @@ A Docker container that provides a REST API for Azure DevOps operations using MC
 
 ## Quick Start
 
-1. **Set your organization**
+1. **Set your organization and tenant**
+
 ```bash
-echo "AZURE_DEVOPS_ORG=your-org-name" > .env
+# Create .env file with your Azure DevOps organization and tenant ID
+cat > .env << EOF
+AZURE_DEVOPS_ORG=your-org-name
+AZURE_TENANT_ID=your-tenant-id
+EOF
 ```
 
 2. **Start the container**
+
 ```bash
 docker-compose up -d
 ```
 
 3. **Authenticate when prompted**
+
 ```bash
 # Watch logs for authentication prompt
 docker-compose logs -f azure-devops-mcp
@@ -27,6 +34,7 @@ docker-compose logs -f azure-devops-mcp
 ## Features
 
 - 🔐 **Automatic Azure CLI authentication** with device code
+- 🏢 **Multi-tenant support** with automatic tenant switching
 - 💾 **Persistent credentials** across container restarts
 - 🛠️ **70+ Azure DevOps tools** available via REST API
 - 📦 **Docker-ready** with simple docker-compose setup
@@ -47,6 +55,17 @@ Add this to your MCP settings:
 - `GET /api/tools` - List available tools
 - `POST /api/tools/{tool-name}/call` - Execute a tool
 - `POST /api/mcp` - MCP endpoint for Claude Code / VS Code
+
+## Configuration
+
+### Environment Variables
+
+- `AZURE_DEVOPS_ORG` - Your Azure DevOps organization name (required)
+- `AZURE_TENANT_ID` - Your Azure AD tenant ID (optional, but recommended for multi-tenant scenarios)
+
+### Finding Your Tenant ID
+
+**Azure Portal**: DevOps -> Profile picture -> Switch directory
 
 ## Requirements
 
