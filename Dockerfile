@@ -51,8 +51,9 @@ COPY src/ ./src/
 COPY scripts/ ./scripts/
 COPY docker-entrypoint.sh ./
 
-# Make scripts executable
-RUN chmod +x ./docker-entrypoint.sh ./scripts/auth-check.sh
+# Fix line endings and make scripts executable
+RUN sed -i 's/\r$//' ./docker-entrypoint.sh ./scripts/auth-check.sh && \
+    chmod +x ./docker-entrypoint.sh ./scripts/auth-check.sh
 
 # Expose port
 EXPOSE 3000
@@ -61,5 +62,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
 
-# Start with authentication check and app startup
-CMD ["bash", "-c", "echo '🚀 Starting Azure DevOps MCP REST Wrapper...'; echo '🔐 Checking Azure CLI authentication...'; ./scripts/auth-check.sh; echo '🔧 Starting application...'; npx ts-node --transpile-only src/index.ts"]
+# Use entrypoint script
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["npx", "ts-node", "--transpile-only", "src/index.ts"]

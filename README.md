@@ -14,9 +14,11 @@ AZURE_TENANT_ID=your-tenant-id
 EOF
 ```
 
-2. **Start the container**
+2. **Build and start the container**
 
 ```bash
+# Always rebuild to avoid cached issues
+docker-compose build --no-cache
 docker-compose up -d
 ```
 
@@ -49,6 +51,13 @@ Add this to your MCP settings:
 }
 ```
 
+### Alternative: Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
 ## API Endpoints
 
 - `GET /health` - Health check
@@ -74,3 +83,37 @@ Add this to your MCP settings:
 - Azure account for authentication
 
 That's it! The container handles everything else automatically.
+
+## FAQ
+
+### az login doesn't work with MCP in IDE
+
+Az login only works inside the Docker container. We don't have a solution yet. Run locally instead:
+
+```bash
+npm run dev
+```
+
+### Container not picking up code changes
+
+If your code changes aren't reflected, rebuild the container completely:
+
+```bash
+# Stop and remove existing container
+docker-compose down
+
+# Rebuild without cache to ensure fresh build
+docker-compose build --no-cache
+
+# Start fresh container
+docker-compose up -d
+```
+
+### For development: live reload
+
+For active development, you can rebuild and restart quickly:
+
+```bash
+# Quick rebuild and restart
+docker-compose down && docker-compose build && docker-compose up -d
+```

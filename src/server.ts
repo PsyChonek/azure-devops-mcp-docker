@@ -57,6 +57,46 @@ class Server {
       res.json({ status: 'healthy', timestamp: new Date().toISOString() });
     });
 
+    // Configuration endpoint to set Azure DevOps organization
+    this.app.post('/configure', (req: Request, res: Response) => {
+      const { azureDevOpsOrg } = req.body;
+
+      if (!azureDevOpsOrg) {
+        return res.status(400).json({
+          error: 'Missing azureDevOpsOrg in request body',
+          required_fields: [
+            {
+              name: 'azureDevOpsOrg',
+              description: 'Your Azure DevOps organization name (e.g., "mycompany")',
+              example: 'mycompany'
+            }
+          ]
+        });
+      }
+
+      // Store in environment for this session
+      process.env.AZURE_DEVOPS_ORG = azureDevOpsOrg;
+
+      res.json({
+        message: 'Azure DevOps organization configured successfully',
+        organization: azureDevOpsOrg,
+        status: 'configured'
+      });
+    });
+
+    // Get current configuration
+    this.app.get('/configure', (req: Request, res: Response) => {
+      const currentOrg = process.env.AZURE_DEVOPS_ORG;
+
+      res.json({
+        configured: !!currentOrg,
+        organization: currentOrg || null,
+        message: currentOrg
+          ? `Currently configured for organization: ${currentOrg}`
+          : 'No Azure DevOps organization configured. Use POST /configure to set one.'
+      });
+    });
+
     // MCP Initialize endpoint
     this.app.post('/initialize', (req: Request, res: Response) => {
       res.json({
@@ -188,7 +228,18 @@ class Server {
                   id,
                   error: {
                     code: -32603,
-                    message: 'Missing Azure DevOps organization. Set AZURE_DEVOPS_ORG environment variable and ensure Azure CLI is authenticated (az login).'
+                    message: 'Azure DevOps organization not configured. Please provide your organization name.',
+                    data: {
+                      type: 'configuration_required',
+                      required_fields: [
+                        {
+                          name: 'azureDevOpsOrg',
+                          description: 'Your Azure DevOps organization name (e.g., "mycompany")',
+                          prompt: 'What is your Azure DevOps organization name?'
+                        }
+                      ],
+                      instructions: 'You can either:\n1. Set AZURE_DEVOPS_ORG environment variable\n2. Provide it in the MCP client configuration\n3. Ensure Azure CLI is authenticated (az login) and configured'
+                    }
                   }
                 });
               }
@@ -246,7 +297,18 @@ class Server {
                   id,
                   error: {
                     code: -32603,
-                    message: 'Missing Azure DevOps organization. Set AZURE_DEVOPS_ORG environment variable and ensure Azure CLI is authenticated (az login).'
+                    message: 'Azure DevOps organization not configured. Please provide your organization name.',
+                    data: {
+                      type: 'configuration_required',
+                      required_fields: [
+                        {
+                          name: 'azureDevOpsOrg',
+                          description: 'Your Azure DevOps organization name (e.g., "mycompany")',
+                          prompt: 'What is your Azure DevOps organization name?'
+                        }
+                      ],
+                      instructions: 'You can either:\n1. Set AZURE_DEVOPS_ORG environment variable\n2. Provide it in the MCP client configuration\n3. Ensure Azure CLI is authenticated (az login) and configured'
+                    }
                   }
                 });
               }
