@@ -76,6 +76,11 @@ npm run dev
 
 **Azure Portal**: DevOps -> Profile picture -> Switch directory
 
+## HTTPS
+
+- Install openssl
+- Use `npm run generate-certs` to create self-signed certs
+
 ## Requirements
 
 - Docker & Docker Compose

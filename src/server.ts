@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
 import { MCPClientManager } from './mcp-client';
 import { extractAuthenticationMiddleware, validateAuthenticationMiddleware } from './auth-middleware';
 
@@ -11,10 +14,14 @@ class Server {
   private app: express.Application;
   private mcpClient: MCPClientManager;
   private port: number;
+  private httpsPort: number;
+  private useHttps: boolean;
 
   constructor() {
     this.app = express();
     this.port = parseInt(process.env.PORT || '3000', 10);
+    this.httpsPort = parseInt(process.env.HTTPS_PORT || '3001', 10);
+    this.useHttps = process.env.ENABLE_HTTPS === 'true' || process.env.ENABLE_HTTPS === '1';
     this.mcpClient = new MCPClientManager();
     this.setupMiddleware();
     this.setupRoutes();
@@ -100,7 +107,7 @@ class Server {
     // MCP Initialize endpoint
     this.app.post('/initialize', (req: Request, res: Response) => {
       res.json({
-        protocolVersion: '2024-11-05',
+        protocolVersion: '2025-06-18',
         capabilities: {
           tools: {}
         },
@@ -187,7 +194,7 @@ class Server {
                 jsonrpc: '2.0',
                 id,
                 result: {
-                  protocolVersion: '2024-11-05',
+                  protocolVersion: '2025-06-18',
                   capabilities: {
                     tools: {}
                   },
@@ -546,22 +553,50 @@ class Server {
     try {
       // Initialize MCP client manager (creates default client if env vars are available)
       await this.mcpClient.initialize();
-      
+
       // Start periodic cleanup of unused clients (every 15 minutes)
       setInterval(() => {
         this.mcpClient.cleanupUnusedClients(30).catch(error => {
           console.error('Error during client cleanup:', error);
         });
       }, 15 * 60 * 1000);
-      
-      // Start server
+
+      // Start HTTP server
       this.app.listen(this.port, () => {
-        console.log(`🚀 Server started on port ${this.port}`);
+        console.log(`🚀 HTTP Server started on port ${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
         console.log(`🔧 Tools: http://localhost:${this.port}/api/tools`);
         console.log(`🌐 MCP Endpoint: http://localhost:${this.port}/api/mcp`);
-        console.log(`🔐 Authentication: Azure CLI (ensure 'az login' is completed)`);
       });
+
+      // Start HTTPS server if enabled and certificates exist
+      if (this.useHttps) {
+        try {
+          const certPath = path.join(__dirname, '..', 'certs', 'cert.pem');
+          const keyPath = path.join(__dirname, '..', 'certs', 'key.pem');
+
+          if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+            const httpsOptions = {
+              key: fs.readFileSync(keyPath),
+              cert: fs.readFileSync(certPath)
+            };
+
+            https.createServer(httpsOptions, this.app).listen(this.httpsPort, () => {
+              console.log(`🔒 HTTPS Server started on port ${this.httpsPort}`);
+              console.log(`📊 HTTPS Health check: https://localhost:${this.httpsPort}/health`);
+              console.log(`🔧 HTTPS Tools: https://localhost:${this.httpsPort}/api/tools`);
+              console.log(`🌐 HTTPS MCP Endpoint: https://localhost:${this.httpsPort}/api/mcp`);
+              console.log(`🔑 For Claude Desktop, use: https://localhost:${this.httpsPort}/api/mcp`);
+            });
+          } else {
+            console.warn('⚠️  HTTPS enabled but certificates not found. Run: npm run generate-certs');
+          }
+        } catch (error) {
+          console.error('❌ Failed to start HTTPS server:', error);
+        }
+      }
+
+      console.log(`🔐 Authentication: Azure CLI (ensure 'az login' is completed)`);
     } catch (error) {
       console.error('Failed to start server:', error);
       process.exit(1);
