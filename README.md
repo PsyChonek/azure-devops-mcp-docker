@@ -78,7 +78,7 @@ npm run dev
 
 ## HTTPS
 
-- Have install openssl
+- Install openssl
 - Use `npm run generate-certs` to create self-signed certs
 
 ## Requirements
