@@ -1,0 +1,15 @@
+{
+  "name": "azure-devops-mcp",
+  "version": "1.0.0",
+  "description": "Azure DevOps MCP server for managing projects, work items, and repositories",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "keywords": ["azure-devops", "mcp", "claude"],
+  "author": "Azure DevOps MCP Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}
