@@ -125,6 +125,6 @@ Require proxy, dont support local mcp server.
 ```json
     "azure-devops-mcp": {
       "command": "node",
-      "args": [".../azure-devops-mcp-docker/mcpb-package/proxy.js"]
+      "args": [".../azure-devops-mcp-docker/claude/proxy.js"]
     }
 ```
