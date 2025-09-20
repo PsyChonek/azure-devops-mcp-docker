@@ -55,3 +55,4 @@ logs/
 *.sln
 *.sw?
 .claude
+certs

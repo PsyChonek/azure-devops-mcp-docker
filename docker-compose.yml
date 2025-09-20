@@ -2,12 +2,18 @@ services:
   azure-devops-mcp:
     build: .
     ports:
-      - "3000:3000"
+      - "3000:3000"    # HTTP port
+      - "3001:3001"    # HTTPS port
     env_file:
       - .env
+    environment:
+      - ENABLE_HTTPS=true
+      - HTTPS_PORT=3001
     volumes:
       # Persist Azure CLI credentials across container restarts
       - azure-cli-config:/root/.azure
+      # Mount SSL certificates
+      - ./certs:/app/certs:ro
     restart: unless-stopped
 
 volumes:

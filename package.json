@@ -8,7 +8,10 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "docker:build": "docker build -t azure-devops-mcp-rest-wrapper .",
-    "docker:run": "docker run -p 3000:3000 azure-devops-mcp-rest-wrapper"
+    "docker:run": "docker run -p 3000:3000 -p 3001:3001 azure-devops-mcp-rest-wrapper",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "generate-certs": "mkdir -p certs && openssl req -x509 -newkey rsa:4096 -keyout certs/key.pem -out certs/cert.pem -days 365 -nodes -subj \"/C=US/ST=State/L=City/O=Organization/CN=localhost\""
   },
   "keywords": [
     "azure-devops",
