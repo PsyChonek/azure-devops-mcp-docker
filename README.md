@@ -117,3 +117,14 @@ For active development, you can rebuild and restart quickly:
 # Quick rebuild and restart
 docker-compose down && docker-compose build && docker-compose up -d
 ```
+
+### Claude Desktop config
+
+Require proxy, dont support local mcp server.
+
+```json
+    "azure-devops-mcp": {
+      "command": "node",
+      "args": [".../azure-devops-mcp-docker/mcpb-package/proxy.js"]
+    }
+```
