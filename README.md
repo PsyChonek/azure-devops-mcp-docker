@@ -76,7 +76,7 @@ npm run dev
 
 **Azure Portal**: DevOps -> Profile picture -> Switch directory
 
-## Https
+## HTTPS
 
 - Have install openssl
 - Use `npm run generate-certs` to create self-signed certs
