@@ -1,0 +1,20 @@
+{
+  "manifest_version": "0.1",
+  "name": "azure-devops-mcp",
+  "version": "1.0.0",
+  "display_name": "Azure DevOps MCP",
+  "description": "Azure DevOps MCP server for managing projects, work items, and repositories",
+  "author": {
+    "name": "Azure DevOps MCP Team"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "/Users/danielvazac/Repos/azure-devops-mcp-docker/mcpb-package/proxy.js",
+    "mcp_config": {
+      "command": "node",
+    "args": ["/Users/danielvazac/Repos/azure-devops-mcp-docker/mcpb-package/proxy.js"]
+      }
+  },
+  "keywords": ["azure-devops", "project-management", "work-items", "repositories", "ci-cd"],
+  "license": "MIT"
+}
